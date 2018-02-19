@@ -16,7 +16,7 @@ and navigate to aws folder:
 create [a new AWS account](https://aws.amazon.com/free/). This credentials are defaults also 
 for both Packer, and Terraform. 
 
-If you already have access and secret keys you can export them for Linux, Mac OS:
+If you already have access and secret keys you can export them in bash (for Linux, Mac OS):
 
 ```
     export AWS_ACCESS_KEY_ID=MYACCESSKEYID
@@ -31,11 +31,11 @@ or set as environment variables for Windows using PowerShell:
 ```
 
 3. Build Amazon Machine Images for your cluster. For building 
-    a master image go to /packer/master/ and run commamd:
+    a master image go to `/packer/master/` and run commamd:
 
     `packer build packer.json`
 
-    than for a slave image go to /packer/slave/ and run commamd:
+    than for a slave image go to `/packer/slave/` and run commamd:
 
     `packer build packer.json`
 
@@ -52,7 +52,7 @@ The key will also allow us to access the newly created instances of cluster via 
 
 Running following command for Linux or Mac OS will generate ssh.pub file, which you have to copy into `/terraform/ssh.pub` file.
 
-    `ssh-keygen -f ssh`
+   `ssh-keygen -f ssh`
 
 For Windows OS you can generate public key with [PuTTYgen](https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-windows) applicaiton.
 
@@ -70,11 +70,14 @@ For Windows OS you can generate public key with [PuTTYgen](https://docs.joyent.c
 
 ## Validate cluster
 
-Once the deployment is completed you can validate created cluster.
+Once the deployment is completed you can validate created cluster. 
 
-1. Ssh to one of the created instances as "ubuntu" user and ssh key pair for authentication.
+1. Open EC2 Manamgement Console and ensure your cluster consists of (5) instances and they are up and running.
 
-1. Check members of consul cluster by executing following command:
+1. Select an instance and connect as "ubuntu" user as recommended in [AWS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstances.html) documentation.
+Use created before ssh key pair for authentication.
+
+1. Once you access the instance, check members of the consul cluster by executing following command:
 
     `consul members`
 
