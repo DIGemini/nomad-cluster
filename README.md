@@ -14,5 +14,5 @@ one with a number (2 in this example) of Nomad and Consul client nodes, which ar
 
 `git clone https://github.com/dig-dig/nomad-cluster.git`
 
-* [Build and deploy to AWS](https://github.com/dig-dig/aws)
+* [Build and deploy to AWS](https://github.com/dig-dig/nomad-cluster/tree/master/aws)
 * [Build and deploy to Azure]
