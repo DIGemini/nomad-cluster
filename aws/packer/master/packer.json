@@ -1,0 +1,49 @@
+{
+	"description": "Master",
+	"variables": {
+		"aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+		"aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+		"nomad_url": "https://releases.hashicorp.com/nomad/0.7.1/nomad_0.7.1_linux_amd64.zip",
+		"consul_url": "https://releases.hashicorp.com/consul/1.0.6/consul_1.0.6_linux_amd64.zip"
+	},
+	"builders": [
+		{
+			"ssh_username": "ubuntu",
+			"access_key": "{{user `aws_access_key`}}",
+			"secret_key": "{{user `aws_secret_key`}}",
+			"region": "us-east-2",
+			"source_ami": "ami-f0f8d695",
+			"instance_type": "t2.micro",
+			"ami_name": "master-{{timestamp}}",
+			"type": "amazon-ebs"
+		}
+	],
+	"provisioners": [
+		{
+			"type": "file",
+			"source": "files",
+			"destination": "/tmp/"
+		},
+		{
+			"type": "shell",
+			"inline": [
+				"sudo apt-get -y update",
+				"sudo apt-get -y install unzip systemd",
+
+				"curl -o /tmp/nomad.zip -L {{ user `nomad_url` }}",
+				"sudo unzip -d /tmp/files /tmp/nomad.zip",
+
+				"curl -o /tmp/consul.zip -L {{ user `consul_url` }}",
+				"sudo unzip -d /tmp/files /tmp/consul.zip"
+			]
+		},
+		{
+			"type": "shell",
+			"scripts": [
+				"scripts/consul.sh",
+				"scripts/nomad.sh"
+			],
+			"execute_command": "{{.Vars}} sudo --preserve-env bash -x '{{.Path}}'"
+		}
+	]
+}

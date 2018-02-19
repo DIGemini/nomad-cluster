@@ -1,0 +1,9 @@
+{
+	"server": false,
+	"datacenter": "my-datacenter",
+	"retry_join": [
+		"provider=aws tag_key=ConsulAgent tag_value=Server"
+	],
+	"data_dir": "/var/lib/consul/data",
+	"log_level": "INFO"
+}
