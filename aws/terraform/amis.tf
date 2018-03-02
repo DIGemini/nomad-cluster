@@ -1,7 +1,7 @@
 variable "ami_master" {
-  default = "ami-ffa5919a"
+  default = "ami-2cddea49"
 }
 
 variable "ami_slave" {
-  default = "ami-84a692e1"
+  default = "ami-2addea4f"
 }

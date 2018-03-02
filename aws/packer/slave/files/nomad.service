@@ -5,8 +5,6 @@ Requires=consul.service
 [Service]
 Type=simple
 WorkingDirectory=/var/lib/nomad
-User=nomad
-Group=nogroup
 ExecStart=/usr/bin/nomad agent -config=/var/lib/nomad/nomad.conf
 Restart=on-failure
 

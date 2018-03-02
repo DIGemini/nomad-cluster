@@ -4,12 +4,6 @@ set -e
 
 files=/tmp/files
 
-adduser \
-	--home=/var/lib/consul \
-	--shell=/usr/sbin/nologin \
-	--system \
-	consul
-
 function install_file() {
 	source_basename="$1"
 	source_path="${files}/${source_basename}"
@@ -30,12 +24,14 @@ function install_files() {
 	done
 }
 
-consul_home=~consul
-
 install_files <<END
-consul            /usr/bin/consul                     755  root    root
-consul.service    /etc/systemd/system/consul.service  644  root    root
-consul.conf.json  ${consul_home}/consul.conf.json     644  consul  nogroup
+consul            /usr/bin/consul                     755  root root
+nomad             /usr/bin/nomad                      755  root root
+consul.service    /etc/systemd/system/consul.service  644  root root
+nomad.service     /etc/systemd/system/nomad.service   644  root root
+consul.conf.json  /var/lib/consul/consul.conf.json    644  root root
+nomad.conf        /var/lib/nomad/nomad.conf           644  root root
 END
 
 systemctl enable consul
+systemctl enable nomad

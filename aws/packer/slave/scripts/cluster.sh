@@ -4,14 +4,6 @@ set -e
 
 files=/tmp/files
 
-adduser \
-	--home=/var/lib/nomad \
-	--shell=/usr/sbin/nologin \
-	--system \
-	nomad
-
-nomad_home=~nomad
-
 function install_file() {
 	source_basename="$1"
 	source_path="${files}/${source_basename}"
@@ -33,9 +25,13 @@ function install_files() {
 }
 
 install_files <<END
-nomad          /usr/bin/nomad                     755  root   root
-nomad.service  /etc/systemd/system/nomad.service  644  root   root
-nomad.conf     ${nomad_home}/nomad.conf           644  nomad  nogroup
+consul            /usr/bin/consul                     755  root root
+nomad             /usr/bin/nomad                      755  root root
+consul.service    /etc/systemd/system/consul.service  644  root root
+nomad.service     /etc/systemd/system/nomad.service   644  root root
+consul.conf.json  /var/lib/consul/consul.conf.json    644  root root
+nomad.conf        /var/lib/nomad/nomad.conf           644  root root
 END
 
+systemctl enable consul
 systemctl enable nomad
