@@ -14,18 +14,36 @@ and navigate to azure folder:
 
 1. Authorize Packer to build in Azure as recommended [here](https://www.packer.io/docs/builders/azure-setup.html).
 
+1. Export to environment variables keys and values you have got in previous step. You can export them in bash (for Linux, Mac OS):
+
+```bash
+    export ARM_SUBSCRIPTION_ID=SUBSCRIPTION_ID
+    export ARM_TENANT_ID=TENANT_ID
+    export ARM_CLIENT_ID=CLIENT_ID
+    export ARM_CLIENT_SECRET=CLIENT_SECRET
+    export ARM_RESOURCE_GROUP=RESOURCE_GROUP
+    export ARM_STORAGE_ACCOUNT=STORAGE_ACCOUNT
+```
+
+   or set as environment variables for Windows using PowerShell:
+
+```powershell
+    [Environment]::SetEnvironmentVariable("ARM_SUBSCRIPTION_ID", "SUBSCRIPTION_ID", "User")
+    [Environment]::SetEnvironmentVariable("ARM_TENANT_ID", "TENANT_ID", "User")
+    [Environment]::SetEnvironmentVariable("ARM_CLIENT_ID", "CLIENT_ID", "User")
+    [Environment]::SetEnvironmentVariable("ARM_CLIENT_SECRET", "CLIENT_SECRET", "User")
+    [Environment]::SetEnvironmentVariable("ARM_RESOURCE_GROUP", "RESOURCE_GROUP", "User")
+    [Environment]::SetEnvironmentVariable("ARM_STORAGE_ACCOUNT", "STORAGE_ACCOUNT", "User")
+```
+
 1. Build Virtual Hard Drivers for your cluster.
     * For building a master image go to `/packer/master/`
     * In `files/consul.conf.json` configuration file update `retry_join` parameter with values you have got in the previous step: `subscription_id=... tenant_id=...  client_id=... secret_access_key=...`
-    * run commamd:
-
-    `packer build packer.json`
+    * run commamd: `packer build packer.json`
 
     * For building a slave image go to `/packer/slave/`
     * In `files/consul.conf.json` configuration file update `retry_join` parameter with values you have got in the previous step: `subscription_id=... tenant_id=...  client_id=... secret_access_key=...`
-    * Run commamd:
-
-    `packer build packer.json`
+    * Run commamd: `packer build packer.json`
 
 1. Make sure to take note of the urls for the VHDs you built.
 
