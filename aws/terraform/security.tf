@@ -13,6 +13,15 @@ resource "aws_security_group_rule" "incoming_ssh" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
+resource "aws_security_group_rule" "in_wan_cluster_ingress" {
+  type                     = "ingress"
+  security_group_id        = "${aws_security_group.security_group.id}"
+  from_port                = 8300
+  to_port                  = 8600
+  protocol                 = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
 resource "aws_security_group_rule" "in_cluster_ingress" {
   type                     = "ingress"
   security_group_id        = "${aws_security_group.security_group.id}"

@@ -12,54 +12,60 @@ resource "azurerm_subnet" "cluster" {
   address_prefix       = "10.0.2.0/24"
 }
 
+# Setting network resources for Master
 resource "azurerm_public_ip" "master" {
-  name                         = "master-pip"
-  location                     = "${var.azure_region}"
-  resource_group_name          = "${azurerm_resource_group.cluster.name}"
-  public_ip_address_allocation = "Dynamic"
-  idle_timeout_in_minutes      = 30
-
-  tags {
-    environment = "test"
-  }
-}
-
-resource "azurerm_public_ip" "slave" {
-  name                         = "slave-pip"
-  location                     = "${var.azure_region}"
-  resource_group_name          = "${azurerm_resource_group.cluster.name}"
-  public_ip_address_allocation = "Dynamic"
-  idle_timeout_in_minutes      = 30
-
-  tags {
-    environment = "test"
-  }
+  count                         = "${var.server_count}"
+  name                          = "master-pip-${count.index}"
+  location                      = "${var.azure_region}"
+  resource_group_name           = "${azurerm_resource_group.cluster.name}"
+  #public_ip_address_allocation = "Dynamic"
+  public_ip_address_allocation  = "static"
 }
 
 resource "azurerm_network_interface" "master" {
-  name                = "master-interface"
-  location            = "${var.azure_region}"
-  resource_group_name = "${azurerm_resource_group.cluster.name}"
-  network_security_group_id = "${azurerm_network_security_group.cluster.id}"
-  
+  count                           = "${var.server_count}"
+  name                            = "master-interface-${count.index}"
+  location                        = "${var.azure_region}"
+  resource_group_name             = "${azurerm_resource_group.cluster.name}"
+  network_security_group_id       = "${azurerm_network_security_group.cluster.id}"
+
   ip_configuration {
-    name                          = "master-ipconfiguration"
+    name                          = "master-ipc"
     subnet_id                     = "${azurerm_subnet.cluster.id}"
     private_ip_address_allocation = "dynamic"
-    public_ip_address_id          = "${azurerm_public_ip.master.id}"
+    public_ip_address_id          = "${element(azurerm_public_ip.master.*.id,count.index)}"
+  }
+
+  tags {
+    ConsulAutoJoin = "auto-join"
   }
 }
 
+# Setting network resources for Slave
+resource "azurerm_public_ip" "slave" {
+  count                         = "${var.client_count}"
+  name                          = "slave-pip-${count.index}"
+  location                      = "${var.azure_region}"
+  resource_group_name           = "${azurerm_resource_group.cluster.name}"
+  #public_ip_address_allocation = "Dynamic"
+  public_ip_address_allocation  = "static"
+}
+
 resource "azurerm_network_interface" "slave" {
-  name                = "slave-interface"
-  location            = "${var.azure_region}"
-  resource_group_name = "${azurerm_resource_group.cluster.name}"
-  network_security_group_id = "${azurerm_network_security_group.cluster.id}"
+  count                           = "${var.client_count}"
+  name                            = "slave-interface-${count.index}"
+  location                        = "${var.azure_region}"
+  resource_group_name             = "${azurerm_resource_group.cluster.name}"
+  network_security_group_id       = "${azurerm_network_security_group.cluster.id}"
 
   ip_configuration {
-    name                          = "slave-ipconfiguration"
+    name                          = "slave-ipc"
     subnet_id                     = "${azurerm_subnet.cluster.id}"
     private_ip_address_allocation = "dynamic"
-    public_ip_address_id          = "${azurerm_public_ip.slave.id}"
+    public_ip_address_id          = "${element(azurerm_public_ip.slave.*.id,count.index)}"
+  }
+
+  tags {
+    ConsulAutoJoin = "auto-join"
   }
 }

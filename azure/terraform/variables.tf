@@ -14,7 +14,7 @@
 # TF_VAR_azure_resource_group
 variable "azure_resource_group" {
   description = "The Azure resource group."
-  default     = "HashiCorp"
+  default     = "hashicorp"
 }
 
 # TF_VAR_azure_storage_account
@@ -22,6 +22,12 @@ variable "azure_storage_account" {
   description = "The Azure storage account."
   default     = "hashicorpstorage"
 }
+
+variable "environment" {
+  description = "The deployment environment"
+  default     = "test"
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # LOGIN PARAMETERS
 # Administrator user name and password
@@ -56,4 +62,14 @@ variable "azure_region" {
 variable "vm_size" {
    description = "What kind of instance type to use for the nomad clients"
    default     = "Standard_B1s"
+}
+
+variable "server_count" {
+   description = "Number of server instances in consul-nomad cluster"
+   default     = "3"
+}
+
+variable "client_count" {
+   description = "Number of client instances in consul-nomad cluster"
+   default     = "2"
 }
