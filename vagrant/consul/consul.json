@@ -1,9 +1,0 @@
-{
-    "server": true,
-    "datacenter": "dc-vagrant",
-    "retry_join": {
-      "tag_key": "ConsulAgent",
-      "tag_value": "Server"
-    },
-    "bootstrap_expect": 3
-  }

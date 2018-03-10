@@ -1,0 +1,12 @@
+{
+	"server": true,
+	"datacenter": "vagrant-datacenter",
+	"bootstrap_expect": 3,
+	"retry_join": [
+		"192.68.50.11",	
+		"192.68.50.12",	
+		"192.68.50.13"	
+	],
+	"data_dir": "/var/lib/consul/data",
+	"log_level": "INFO"
+}

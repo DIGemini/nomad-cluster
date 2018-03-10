@@ -12,7 +12,10 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "ubuntu/trusty64"
+  
+  #Hyper-V
+  config.vm.box = "bento/ubuntu-14.04" 
+  # config.vm.box = "ubuntu/trusty64"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -70,41 +73,53 @@ Vagrant.configure("2") do |config|
 
   # Disabling mounting of the /vagrant directory
   # Comment this out to allow the shared folder
-  config.vm.synced_folder ".", "/vagrant", disabled: false
+  config.vm.synced_folder ".", "/vagrant", disabled: true
 
 
-    config.vm.provision :file, source: "./nomad", destination: "/tmp"
-    config.vm.provision :file, source: "./consul", destination: "/tmp"
+    # config.vm.provision :file, source: "./nomad", destination: "/tmp"
+    # config.vm.provision :file, source: "./consul", destination: "/tmp"
 
-    config.vm.provision :shell, path: "bootstrap-consulnomad.sh"
+    # config.vm.provision :shell, path: "bootstrap-consulnomad.sh"
     # config.vm.provision :shell, path: "bootstrap-dotnetcore214.sh"
     # config.vm.network :forwarded_port, guest: 80, host: 8080
-    config.vm.provision "docker"
+    
+    # config.vm.provision "docker"
 
     # Servers
     1.upto(1) do |i|
-        vmName = "nomad-server#{i}"
+        vmName = "master-#{i}"
         vmIP = "192.68.50.1#{i}"
         config.vm.define vmName do |server|
             #server.vm.box = "ubuntu/trusty64"
             server.vm.hostname = vmName
             server.vm.network "private_network", ip: vmIP
+            server.vm.provision :file, source: "./master", destination: "/tmp/files"
+            server.vm.provision :shell, path: "./scripts/consulnomad.sh"
+            server.vm.provision :shell, path: "./scripts/cluster.sh"
         end
     end
 
     # Clients
     1.upto(1) do |i|
-        vmName = "nomad-client#{i}"
+        vmName = "slave-#{i}"
         vmIP = "192.68.60.1#{i}"
         config.vm.define vmName do |server|
             #server.vm.box = "ubuntu/trusty64"
             server.vm.hostname = vmName
             server.vm.network "private_network", ip: vmIP
+            server.vm.provision :file, source: "./slave", destination: "/tmp/files"
+            server.vm.provision :shell, path: "./scripts/consulnomad.sh"
+            server.vm.provision :shell, path: "./scripts/cluster.sh"
         end
     end
 
     # Increase memory for Virtualbox
     config.vm.provider "virtualbox" do |vb|
+        vb.memory = "1024"
+    end
+
+    # Increase memory for Hyper-V
+    config.vm.provider "hyperv" do |vb|
         vb.memory = "1024"
     end
 end
