@@ -13,10 +13,6 @@ Vagrant.configure("2") do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
   
-  #Hyper-V
-  config.vm.box = "bento/ubuntu-14.04" 
-  # config.vm.box = "ubuntu/trusty64"
-
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
@@ -85,6 +81,11 @@ Vagrant.configure("2") do |config|
     
     # config.vm.provision "docker"
 
+    CONSUL_VERSION = ENV['CONSUL_VERSION'] || "1.0.6"
+    NOMAD_VERSION = ENV['NOMAD_VERSION'] || "0.7.1"
+
+    config.vm.network "public_network", auto_config: false
+
     # Servers
     1.upto(1) do |i|
         vmName = "master-#{i}"
@@ -94,7 +95,11 @@ Vagrant.configure("2") do |config|
             server.vm.hostname = vmName
             server.vm.network "private_network", ip: vmIP
             server.vm.provision :file, source: "./master", destination: "/tmp/files"
-            server.vm.provision :shell, path: "./scripts/consulnomad.sh"
+            server.vm.provision :shell, path: "./scripts/consulnomad.sh", env: {
+                # Specify Consul and Nomad versions
+                'CONSUL_VERSION' => CONSUL_VERSION,
+                'NOMAD_VERSION' => NOMAD_VERSION,
+            }
             server.vm.provision :shell, path: "./scripts/cluster.sh"
         end
     end
@@ -108,18 +113,24 @@ Vagrant.configure("2") do |config|
             server.vm.hostname = vmName
             server.vm.network "private_network", ip: vmIP
             server.vm.provision :file, source: "./slave", destination: "/tmp/files"
-            server.vm.provision :shell, path: "./scripts/consulnomad.sh"
+            server.vm.provision :shell, path: "./scripts/consulnomad.sh", env: {
+                # Specify Consul and Nomad versions
+                'CONSUL_VERSION' => CONSUL_VERSION,
+                'NOMAD_VERSION' => NOMAD_VERSION,
+            }
             server.vm.provision :shell, path: "./scripts/cluster.sh"
         end
     end
 
     # Increase memory for Virtualbox
     config.vm.provider "virtualbox" do |vb|
+        vb.box = "ubuntu/trusty64"
         vb.memory = "1024"
     end
 
     # Increase memory for Hyper-V
-    config.vm.provider "hyperv" do |vb|
-        vb.memory = "1024"
+    config.vm.provider "hyperv" do |hb|
+        hb.box = "bento/ubuntu-14.04"
+        hb.memory = "1024"
     end
 end
