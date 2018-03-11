@@ -2,12 +2,12 @@ resource "azurerm_virtual_network" "cluster" {
   name                = "cluster-vnet"
   address_space       = ["10.0.0.0/16"]
   location            = "${var.azure_region}"
-  resource_group_name = "${azurerm_resource_group.cluster.name}"
+  resource_group_name = "${var.azure_resource_group}"
 }
 
 resource "azurerm_subnet" "cluster" {
   name                 = "cluster-subnet"
-  resource_group_name  = "${azurerm_resource_group.cluster.name}"
+  resource_group_name  = "${var.azure_resource_group}"
   virtual_network_name = "${azurerm_virtual_network.cluster.name}"
   address_prefix       = "10.0.2.0/24"
 }
@@ -17,7 +17,7 @@ resource "azurerm_public_ip" "master" {
   count                         = "${var.server_count}"
   name                          = "master-pip-${count.index}"
   location                      = "${var.azure_region}"
-  resource_group_name           = "${azurerm_resource_group.cluster.name}"
+  resource_group_name           = "${var.azure_resource_group}"
   #public_ip_address_allocation = "Dynamic"
   public_ip_address_allocation  = "static"
 }
@@ -26,7 +26,7 @@ resource "azurerm_network_interface" "master" {
   count                           = "${var.server_count}"
   name                            = "master-interface-${count.index}"
   location                        = "${var.azure_region}"
-  resource_group_name             = "${azurerm_resource_group.cluster.name}"
+  resource_group_name             = "${var.azure_resource_group}"
   network_security_group_id       = "${azurerm_network_security_group.cluster.id}"
 
   ip_configuration {
@@ -46,7 +46,7 @@ resource "azurerm_public_ip" "slave" {
   count                         = "${var.client_count}"
   name                          = "slave-pip-${count.index}"
   location                      = "${var.azure_region}"
-  resource_group_name           = "${azurerm_resource_group.cluster.name}"
+  resource_group_name           = "${var.azure_resource_group}"
   #public_ip_address_allocation = "Dynamic"
   public_ip_address_allocation  = "static"
 }
@@ -55,7 +55,7 @@ resource "azurerm_network_interface" "slave" {
   count                           = "${var.client_count}"
   name                            = "slave-interface-${count.index}"
   location                        = "${var.azure_region}"
-  resource_group_name             = "${azurerm_resource_group.cluster.name}"
+  resource_group_name             = "${var.azure_resource_group}"
   network_security_group_id       = "${azurerm_network_security_group.cluster.id}"
 
   ip_configuration {

@@ -1,7 +1,7 @@
 variable "image_master_guid" {
-  default = "967fadca-a552-49fd-a92c-49e48a45db3a"
+  default = "864c0ade-115f-4a9e-b2bb-0d5f2b7efd8c"
 }
 
 variable "image_slave_guid" {
-  default = "d6066530-1cba-4e98-973c-bf7206bae838"
+  default = "ff308a10-7af7-41fc-9986-cbe09f04df0d"
 }

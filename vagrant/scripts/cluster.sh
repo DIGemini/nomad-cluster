@@ -12,9 +12,9 @@ function install_file() {
 	destination_user="$4"
 	destination_group="$5"
 
-	cp "${source_path}" "${destination_path}"
-	chmod "${destination_permissions}" "${destination_path}"
-	chown "${destination_user}:${destination_group}" "${destination_path}"
+	sudo cp "${source_path}" "${destination_path}"
+	sudo chmod "${destination_permissions}" "${destination_path}"
+	sudo chown "${destination_user}:${destination_group}" "${destination_path}"
 }
 
 function install_files() {
@@ -33,5 +33,5 @@ consul.conf.json  /var/lib/consul/consul.conf.json    644  root root
 nomad.conf        /var/lib/nomad/nomad.conf           644  root root
 END
 
-systemctl enable consul
-systemctl enable nomad
+sudo systemctl enable consul
+sudo systemctl enable nomad

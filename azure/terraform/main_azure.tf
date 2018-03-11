@@ -1,14 +1,8 @@
-# azurerm_resource_group
-resource "azurerm_resource_group" "cluster" {
-  name     = "${var.azure_resource_group}"
-  location = "${var.azure_region}"
-}
-
 # virtual_machine
 resource "azurerm_virtual_machine" "master" {
   name                  = "master-${count.index}"
   location              = "${var.azure_region}"
-  resource_group_name   = "${azurerm_resource_group.cluster.name}"
+  resource_group_name   = "${var.azure_resource_group}"
   network_interface_ids = ["${element(azurerm_network_interface.master.*.id,count.index)}"]
   vm_size               = "${var.vm_size}"
   count                 = "${var.server_count}"
@@ -41,7 +35,7 @@ resource "azurerm_virtual_machine" "master" {
 resource "azurerm_virtual_machine" "slave" {
   name          = "slave-${count.index}"
   location      = "${var.azure_region}"
-  resource_group_name   = "${azurerm_resource_group.cluster.name}"
+  resource_group_name   = "${var.azure_resource_group}"
   network_interface_ids = ["${element(azurerm_network_interface.slave.*.id,count.index)}"]
   vm_size               = "${var.vm_size}"
   count                 = "${var.client_count}"

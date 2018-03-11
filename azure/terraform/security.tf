@@ -1,12 +1,12 @@
 resource "azurerm_network_security_group" "cluster" {
   name                = "cluster-nsg"
-  location            = "${azurerm_resource_group.cluster.location}"
-  resource_group_name = "${azurerm_resource_group.cluster.name}"
+  location            = "${var.azure_region}"
+  resource_group_name = "${var.azure_resource_group}"
 }
 
 resource "azurerm_network_security_rule" "sshRule" {
   name                        = "allow-ssh"
-  resource_group_name         = "${azurerm_resource_group.cluster.name}"
+  resource_group_name         = "${var.azure_resource_group}"
   network_security_group_name = "${azurerm_network_security_group.cluster.name}"
 
   priority                    = 110
@@ -22,7 +22,7 @@ resource "azurerm_network_security_rule" "sshRule" {
 
 resource "azurerm_network_security_rule" "nomadRule" {
   name                        = "allow-nomad-allports"
-  resource_group_name         = "${azurerm_resource_group.cluster.name}"
+  resource_group_name         = "${var.azure_resource_group}"
   network_security_group_name = "${azurerm_network_security_group.cluster.name}"
 
   priority                    = 120
@@ -38,7 +38,7 @@ resource "azurerm_network_security_rule" "nomadRule" {
 
 resource "azurerm_network_security_rule" "consulRule" {
   name                        = "allow-consul-allports"
-  resource_group_name         = "${azurerm_resource_group.cluster.name}"
+  resource_group_name         = "${var.azure_resource_group}"
   network_security_group_name = "${azurerm_network_security_group.cluster.name}"
 
   priority                    = 130
